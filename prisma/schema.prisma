@@ -10,11 +10,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+// Define o modelo de usuário
 model Usuario {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  senha String
-  cidade String
-  estado String
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Tanque    Tanque[]
+  Peixe     Peixe[]
+  Tarefa    Tarefa[]
+}
+
+// schema.prisma
+
+// Define o modelo de tanque
+model Tanque {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  nome_tanque  String?  @db.VarChar
+  largura      Float
+  profundidade Float
+  comprimento  Float
+  quant_peixe  String?  @db.VarChar
+  tipo_peixe   String
+  created_At   DateTime @default(now())
+  update_At    DateTime @updatedAt
+
+  // Define a relação com o modelo de usuário
+  user Usuario @relation(fields: [user_id], references: [id])
+}
+
+// schema.prisma
+
+// Define o modelo de peixe
+model Peixe {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  tipo_peixe   String
+  quant_peixe  String
+  fase_criacao String
+  created_At   DateTime @default(now())
+  update_At    DateTime @updatedAt
+
+  // Define a relação com o modelo de usuário
+  user Usuario @relation(fields: [user_id], references: [id])
+}
+
+// schema.prisma
+
+// Define o modelo de tarefa
+model Tarefa {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  task       String
+  created_At DateTime @default(now())
+  update_At  DateTime @updatedAt
+
+  // Define a relação com o modelo de usuário
+  user Usuario @relation(fields: [user_id], references: [id])
 }
